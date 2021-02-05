@@ -20,7 +20,7 @@ tokenizer = PegasusTokenizer.from_pretrained(model_name)
 model = PegasusForConditionalGeneration.from_pretrained(model_name).to(torch_device)
 
 model.eval()
-traced_model = torch.jit.trace(model, (ARTICLE_TO_SUMMARIZE,))
+traced_model = torch.jit.trace(model, example_inputs=torch.tensor([[0, 0], [0, 0]], dtype=torch.long))
 ml_model = ct.convert(traced_model, inputs=[tokenizer([ARTICLE_TO_SUMMARIZE], max_length=1024, return_tensors='tf')])
 ml_model.save("TextSummarizer.mlmodel")
 
